@@ -16,8 +16,10 @@ Running the App
 Three commands
 1. cargo run -- build <dbname> <collectionname>
    Builds the db and collection in mongo
+
 2. cargo run -- add <dbname> <collectionnanme> <value>
    Adds a simple BSON value in mongodb
+
 3. cargo run -- use <dbname> <collectionname>
    Doesn't change the db, just runs it
 
