@@ -105,7 +105,9 @@ fn db_options() -> CreateCollectionOptions {
 }
 
 fn instructions(error_code: i32) {
-    println!("Wrong input (sorry no instructions yet)");
+    if error_code != 0 {
+        println!("Wrong input (sorry no instructions yet)");
+    }
     std::process::exit(error_code);
 }
 
@@ -115,10 +117,6 @@ fn handle_args(c: Client, args: &Vec<String>) -> DataObject {
         db_name: "".to_owned(),
         coll_name: "".to_owned() 
     };
-
-//    let build_val = "build".to_owned();
-//    let add_val = "add".to_owned();
-
 
     if args.len() > 1 {
         let command: &str = &args[1];
@@ -130,6 +128,7 @@ fn handle_args(c: Client, args: &Vec<String>) -> DataObject {
                     database.db_name = args[2].clone().to_owned();
                     database.coll_name = args[3].clone().to_owned();
                     database.build()
+                    instructions(0);
                 } else {
                     instructions(1);
                 }
@@ -144,6 +143,7 @@ fn handle_args(c: Client, args: &Vec<String>) -> DataObject {
                              database.coll_name,
                              args[4].clone());
                     database.add_value(args[4].clone());
+                    instructions(0);
                 } else {
                     instructions(1);
                 }

@@ -1,3 +1,12 @@
+What this is
+============
+
+This is an experimental use of nickel with a mongo database to test my ability to use Rust.
+
+The final product will require you to visit http://localhost:6767 at this point. You will be able to see a small amount of text showing which db, collection, and values per entry you are looking at.
+
+I allow for a small interface with the db as well.
+
 SETUP
 =====
 
