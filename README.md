@@ -22,6 +22,6 @@ Three commands
   Adds a simple BSON value in mongodb
 
 3. `cargo run -- use <dbname> <collectionname>`
-  Doesn't change the db, just runs it
+  Doesn't change the db, just runs the app. Visit localhost:6767 to view the app. It spits out the db data very... uh... inelegantly
 
 If you enter these wrong, it should error out.
