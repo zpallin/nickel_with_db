@@ -127,7 +127,7 @@ fn handle_args(c: Client, args: &Vec<String>) -> DataObject {
                     println!(" - {}.{}", args[2], args[3]);
                     database.db_name = args[2].clone().to_owned();
                     database.coll_name = args[3].clone().to_owned();
-                    database.build()
+                    database.build();
                     instructions(0);
                 } else {
                     instructions(1);
@@ -165,7 +165,14 @@ fn handle_args(c: Client, args: &Vec<String>) -> DataObject {
 }
 
 fn main() { 
-    let client = Client::connect("192.168.33.10", 27017)
+
+    // get db_host
+    let mut db_host_str: String = "localhost:27017".to_owned();
+    let db_host_arr = db_host_str.split(":").collect::<Vec<_>>();
+    let db_host = db_host_arr[0].clone();
+    let db_port: u16 = db_host_arr[1].to_owned().parse().ok().expect("Wanted a number");
+
+    let client = Client::connect(db_host, db_port)
                  .ok().expect("Failed to initialize client.");
     let args: Vec<_> = env::args().collect();
     let mut server = Nickel::new();

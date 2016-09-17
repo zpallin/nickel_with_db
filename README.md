@@ -10,14 +10,15 @@ I allow for a small interface with the db as well.
 SETUP
 =====
 
-I have some manual steps for setting up the DB unfortunately.
+DB
+--
 
-1. You need to clone the following repo for the db. I recommend cloning into another directory.
-   `git clone --recursive https://github.com/pedroamador/ubuntu1404-mongodb26`
-2. Inside the `ubuntu1404-mongodb26` directory, I recommend changing the IP address to `192.168.33.10` since that address is hard coded in.
-3. You need to `vagrant ssh` and then edit `/etc/mongod.conf` so that `bind_ip = 192.168.33.10`.
+I am using a mongodb Dockerfile. To use it, it's pretty simple.
 
-Once that is done, you should be able to connect with the db via the app.
+1. Install docker on your machine https://docs.docker.com/engine/installation/
+2. run `docker run -dit -p 27017:27017 --name nwdb_mongo_ctr zpallin/nwdb_mongo:latest` to start the container
+ * https://hub.docker.com/\_/mongo/
+4. To connect to the db, run `mongo localhost:27017`
 
 Running the App
 ===============
