@@ -6,22 +6,15 @@
  *  to create a web application of sufficient complexity
  */
 
-// nickel_with_db
 extern crate nickel_with_db;
 
-// nickel crates
 #[macro_use] extern crate nickel;
 extern crate nickel_mustache;
 extern crate rustc_serialize;
 
-// argv uses
 use std::env;
-
-// use database modules
-use nickel_with_db::backend::*;
-
-// nickel uses
-//use nickel_mustache::Render;
+use nickel_with_db::models::blog;
+use nickel_with_db::backend::mongo_generate;
 use nickel::{Nickel, HttpRouter};
 
 fn main() { 
