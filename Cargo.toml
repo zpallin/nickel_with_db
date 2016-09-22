@@ -1,12 +1,14 @@
 [package]
 name = "nickel_with_db"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["zpallin <zpallin@gmail.com>"]
 
 [dependencies]
 time = "*"
-nickel_mustache = "*"
 nickel = "*"
 bson = "*"
 mongodb = "*"
 rustc-serialize = "*"
+
+[dependencies.nickel_mustache]
+git = "https://github.com/zpallin/nickel-mustache.git"
