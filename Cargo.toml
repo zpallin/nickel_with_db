@@ -5,8 +5,10 @@ authors = ["zpallin <zpallin@gmail.com>"]
 
 [dependencies]
 time = "*"
-nickel_mustache = "*"
 nickel = "*"
 bson = "*"
 mongodb = "*"
 rustc-serialize = "*"
+
+[dependencies.nickel_mustache]
+git = "https://github.com/zpallin/nickel-mustache.git"
