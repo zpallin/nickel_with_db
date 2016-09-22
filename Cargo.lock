@@ -1,6 +1,6 @@
 [root]
 name = "nickel_with_db"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "bson 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "mongodb 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
