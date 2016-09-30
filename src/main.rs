@@ -51,5 +51,5 @@ fn main() {
         return res.render("templates/home.tpl", &data)
     });
 
-    server.listen("localhost:6767");
+    server.listen("0.0.0.0:6767");
 }
