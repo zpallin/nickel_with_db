@@ -17,14 +17,14 @@ use mongodb::db::options::CreateCollectionOptions;
  *  Database Config Object
  */
 
-struct Database {
+pub struct DatabaseServer {
     pub host: String,
     pub port: u16,
 }
 
-impl Database {
+impl DatabaseServer {
 
-    fn new(host_str: String) -> DatabaseConfig {
+    pub fn new(host_str: String) -> DatabaseServer {
 
         // split host_str so we can get just the hostname and port
         let host_arr = host_str.split(":").collect::<Vec<_>>();
@@ -36,8 +36,8 @@ impl Database {
         // with the mongodb backend
         let port: u16 = host_arr[1].to_owned().parse().ok().expect("Wanted a number");
 
-        // return DatabaseConfig object
-        DatabaseConfig{ host: host, port: port }
+        // return DatabaseServer object
+        DatabaseServer{ host: host, port: port }
     }
 }
 

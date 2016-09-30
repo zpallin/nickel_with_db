@@ -1,6 +1,5 @@
-<!DOCTYPE html>
-<html>
+{{>header}}
 <body>
 <h1>{{ title }}</h1>
 </body>
-</html>
+{{>footer}}

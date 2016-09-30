@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html>
+{{>header}}
+<!-- List View -->
 <body>
 <h1>{{ title }}</h1>
 <ul>
@@ -8,4 +8,4 @@
 {{/values}}
 </ul>
 </body>
-</html>
+{{>footer}}
