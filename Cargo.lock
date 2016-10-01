@@ -2,6 +2,7 @@
 name = "nickel_with_db"
 version = "0.1.1"
 dependencies = [
+ "argparse 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "bson 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "mongodb 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "nickel 0.8.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -17,6 +18,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "memchr 0.1.11 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
+
+[[package]]
+name = "argparse"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "bson"
