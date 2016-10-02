@@ -52,25 +52,27 @@ fn main() {
     server.post("/blog/submit", middleware! { |_req, res|
         let form_data = try_with!(res, _req.form_body());
         let mut data = HashMap::new();
-        let DB = mongo::db::new("localhost::27017".to_owned());
+        let database = mongo::db::new("localhost:27017".to_owned());
 
         data.insert("title", form_data.get("title").unwrap_or("Title?"));
         data.insert("author", form_data.get("author").unwrap_or("Author?"));
         data.insert("category", form_data.get("category").unwrap_or("Category?"));
         data.insert("content", form_data.get("content").unwrap_or("Content?"));
-        data.insert("timestamp", form_data.get("timestamp").unwrap_or("Timestamp?"));
+        //data.insert("timestamp", form_data.get("timestamp").unwrap_or("Timestamp?"));
 
-        DB.insert(&data);
+        database.insert(&data);
         return res.render("templates/home.tpl", &data)
     });
 
     server.get("/blog/new", middleware! { |_req, res| 
-        let mut schema = HashMap::new();
-        schema.insert("author", "input_text");
-        schema.insert("category", "input_text");
-        schema.insert("content", "textarea");
+        let mut schema = vec![
+            ("title", "input_text"),
+            ("author", "input_text"),
+            ("category", "input_text"),
+            ("content", "textarea"),
+        ];
 
-        let data = FormHelper::generic("New Blog", &schema);
+        let data = FormHelper::generic("blog", &schema);
         return res.render("templates/form.tpl", &data)
     });
 

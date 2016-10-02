@@ -26,13 +26,29 @@ pub enum Query {
 
 pub struct db {
     server: DatabaseServer,
+    options: CreateCollectionOptions,
 }
 
 impl db {
     pub fn new(db_addr: String) -> db {
-        db { 
-            server: DatabaseServer::new(db_addr)
-        }
+
+        // default options
+        let mut ops = CreateCollectionOptions::new();
+        ops.capped = true;
+        ops.size = Some(100000);
+
+        // create new_db
+        let new_db = db { 
+            server: DatabaseServer::new(db_addr),
+            options: ops,
+        };
+
+        // return new_db configured
+        new_db
+    }
+
+    pub fn set_options(&mut self, ops: CreateCollectionOptions) {
+        self.options = ops;    
     }
 
     pub fn query<'a>(&self, query: &'a Query) {
@@ -41,6 +57,7 @@ impl db {
             Query::Select {ref query_string} => println!("Selecting: {}",query_string),
         }
     }
+
     pub fn insert(&self, data: &HashMap<&str, &str>) {
         for (key, value) in data {
             println!("{}: {}", key, value);

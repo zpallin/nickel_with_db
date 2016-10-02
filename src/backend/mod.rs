@@ -28,13 +28,18 @@ impl DatabaseServer {
 
         // split host_str so we can get just the hostname and port
         let host_arr = host_str.split(":").collect::<Vec<_>>();
+        println!("{},{}",host_arr[0],host_arr[1]);
 
         // get host by cloning here
         let host = host_arr[0].clone().to_owned();
 
         // get port by taking as u16 -> this is an assumption that might only work
         // with the mongodb backend
-        let port: u16 = host_arr[1].to_owned().parse().ok().expect("Wanted a number");
+        let port: u16 = host_arr[1]
+            .to_owned()
+            .parse()
+            .ok()
+            .expect("DatabaseServer: Wanted a number");
 
         // return DatabaseServer object
         DatabaseServer{ host: host, port: port }

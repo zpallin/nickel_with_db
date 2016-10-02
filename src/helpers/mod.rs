@@ -12,7 +12,18 @@ use mustache::Data;
 pub struct InputFormatter;
 
 impl InputFormatter {
-    pub fn input_text<'a>(name: &str) -> String {
+    pub fn form_wrap(name: &str, inner: &str) -> String {
+        format!(
+            "<form id=\"{name}\" method=\"post\" \
+            action=\"/{name}/submit\"><br/> \
+            {inner} <br/> \
+            </form>",
+            name=name,
+            inner=inner
+        ).to_owned()
+    }
+
+    pub fn input_text(name: &str) -> String {
         format!(
             "<label for=\"{name}\">{name}</label> \
             <input id=\"{name}-input\" name=\"{name}\" type=\"text\">",
@@ -24,9 +35,18 @@ impl InputFormatter {
         format!(
             "<label for=\"{name}\">{name}</label> \
             <textarea id=\"{name}-input\" name=\"{name}\" type=\"text\" \
-            rows=4 cols=10>",
+            rows=4 cols=30></textarea>",
             name=name
         ).to_owned()
+    }
+    pub fn submit() -> String {
+        format!(
+            "<input type=\"submit\" value=\"Post\" />"
+        ).to_owned()
+    }
+
+    fn concat_fields(fields: &String, field: &String) -> String {
+        format!("{}{}<br/>",fields, field)
     }
 }
 
@@ -36,31 +56,40 @@ impl InputFormatter {
 #[derive(RustcEncodable)]
 pub struct FormView {
     title: String,
-    fields: Vec<String>,
+    form: String,
 }
 pub struct FormHelper;
 
 impl FormHelper {
-    pub fn generic(title: &str, hash: &HashMap<&str, &str>) -> FormView {
-        let mut fields = Vec::new();
-        for (key, data_type) in hash {
-            match data_type.as_ref() {
+
+    pub fn generic(title: &str, schema: &Vec<(&str,&str)>) -> FormView {
+
+        let mut fields = "".to_owned();
+
+        for i in 0..schema.len() {
+            let mut field = "".to_owned();
+            let key = schema[i].0;
+            let data_type = schema[i].1;
+            match data_type {
                 "input_text" => {
-                    fields.push(InputFormatter::input_text(key));
+                    field = InputFormatter::input_text(key);
                 },
                 "textarea" => {
-                    fields.push(InputFormatter::textarea(key));
+                    field = InputFormatter::textarea(key);
                 },
                 _ => {
                     panic!("FormHelper::generic, asking for a non-existent
                            InputFormatter");
                 }
             }
+            fields = InputFormatter::concat_fields(&fields, &field);
         }
+
+        fields = InputFormatter::concat_fields(&fields, &InputFormatter::submit());
 
         FormView {
             title: title.to_owned(),
-            fields: fields,
+            form: InputFormatter::form_wrap(&title, &fields),
         }
     }
 }
