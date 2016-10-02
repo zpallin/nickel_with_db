@@ -11,25 +11,25 @@ extern crate nickel_mustache;
 extern crate rustc_serialize;
 extern crate nickel_with_db;
 extern crate argparse;
+extern crate time;
 
-// use the env
+// std includes
 use std::env;
+use std::collections::HashMap;
 
 // nickel with db
 use nickel_with_db::models::blog;
-use nickel_with_db::backend::mongo_generate;
-use nickel_with_db::backend::mongo_backend;
+use nickel_with_db::backend::mongo;
+use nickel_with_db::helpers::FormHelper;
 use argparse::{ArgumentParser, StoreTrue, Store};
 
 // nickel
 use nickel::status::StatusCode;
-use nickel::{Nickel, HttpRouter};
+use nickel::{Nickel, HttpRouter, FormBody};
 
 fn main() { 
 
     let mut server = Nickel::new();
-    //let args: Vec<_> = env::args().collect();
-    let host_string = "localhost:27017".to_owned();
 
     /*
      * Argument Parsing
@@ -46,31 +46,42 @@ fn main() {
         ap.parse_args_or_exit();
     }
 
-//    let database = mongo_generate(host_string, &args);
+    /*
+     * Server states
+     */
+    server.post("/blog/submit", middleware! { |_req, res|
+        let form_data = try_with!(res, _req.form_body());
+        let mut data = HashMap::new();
+        let DB = mongo::db::new("localhost::27017".to_owned());
 
-/*
-    server.get("/testrender", middleware! { |_req, res|        
-        #[derive(RustcEncodable)]
-        struct ViewData<'a> {
-            title: &'a str,
-            values: &'a Vec<String>
-        }
+        data.insert("title", form_data.get("title").unwrap_or("Title?"));
+        data.insert("author", form_data.get("author").unwrap_or("Author?"));
+        data.insert("category", form_data.get("category").unwrap_or("Category?"));
+        data.insert("content", form_data.get("content").unwrap_or("Content?"));
+        data.insert("timestamp", form_data.get("timestamp").unwrap_or("Timestamp?"));
 
-        let db_coll_name = format!("{}.{}",
-                                   database.db_name,
-                                   database.coll_name);
-        let data = ViewData{ title: &db_coll_name, values: &database.list() };
-
-        return res.render("templates/list.tpl", &data)
+        DB.insert(&data);
+        return res.render("templates/home.tpl", &data)
     });
-*/
 
-    server.get("**", middleware! { |_req, res|
+    server.get("/blog/new", middleware! { |_req, res| 
+        let mut schema = HashMap::new();
+        schema.insert("author", "input_text");
+        schema.insert("category", "input_text");
+        schema.insert("content", "textarea");
+
+        let data = FormHelper::generic("New Blog", &schema);
+        return res.render("templates/form.tpl", &data)
+    });
+
+    // catch all for home page
+    server.get("/*", middleware! { |_req, res|
         #[derive(RustcEncodable)]
         struct ViewData;
         let data = ViewData;
         return res.render("templates/home.tpl", &data)
     });
+
 
     server.listen(&*bind);
 }

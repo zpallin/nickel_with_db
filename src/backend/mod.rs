@@ -4,7 +4,7 @@
  *      2016
  */
 
-pub mod mongo_backend;
+pub mod mongo;
 
 use std;
 use bson::Bson;

@@ -10,6 +10,7 @@ bson = "*"
 mongodb = "*"
 rustc-serialize = "*"
 argparse = "*"
+mustache = "*"
 
 [dependencies.nickel_mustache]
 git = "https://github.com/zpallin/nickel-mustache.git"
