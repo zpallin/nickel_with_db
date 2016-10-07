@@ -6,56 +6,82 @@
 
 pub mod mongo;
 
-use std;
+use std::process;
 use bson::Bson;
-use mongodb::{Client, ThreadedClient};
-use mongodb::coll::Collection;
-use mongodb::db::{ThreadedDatabase, Database};
-use mongodb::db::options::CreateCollectionOptions;
 
-/*
- *  Database Config Object
+/*======================================== 
+ *  Schema Struct
+ */
+
+pub struct Schema {
+    value: String,
+    display_type: String,
+}
+
+/*======================================== 
+ *  Database Server Config Struct
  */
 
 pub struct DatabaseServer {
     pub host: String,
     pub port: u16,
+    pub dbname: String,
 }
 
-impl DatabaseServer {
+pub trait Backend {
 
-    pub fn new(host_str: String) -> DatabaseServer {
+    fn new(db_str: String) -> DatabaseServer {
 
-        // split host_str so we can get just the hostname and port
-        let host_arr = host_str.split(":").collect::<Vec<_>>();
-        println!("{},{}",host_arr[0],host_arr[1]);
+        let db_arr = db_str
+            .split("/")
+            .collect::<Vec<_>>();
 
-        // get host by cloning here
-        let host = host_arr[0].clone().to_owned();
+        let host_arr = db_arr[0]
+            .split(":")
+            .collect::<Vec<_>>();
 
-        // get port by taking as u16 -> this is an assumption that might only work
-        // with the mongodb backend
+        // get host and db by cloning
+        let host = host_arr[0]
+            .clone()
+            .to_owned();
+
+        let dbname = db_arr[1]
+            .clone()
+            .to_owned();
+
+        // get port by taking as u16 -> this is mongo specific
+        // but could be made generic
         let port: u16 = host_arr[1]
             .to_owned()
             .parse()
             .ok()
             .expect("DatabaseServer: Wanted a number");
 
-        // return DatabaseServer object
-        DatabaseServer{ host: host, port: port }
+        DatabaseServer {
+            host: host,
+            port: port,
+            dbname: dbname,
+        }
     }
 }
 
+impl Backend for DatabaseServer {}
 
-/*
+/*========================================  
  * Soon to deprecate stuff below.
  */
+
+use mongodb::{Client, ThreadedClient};
+use mongodb::coll::Collection;
+use mongodb::db::{ThreadedDatabase, Database};
+use mongodb::db::options::CreateCollectionOptions;
+
 
 fn instructions(error_code: i32) {
     if error_code != 0 {
         println!("Wrong input (sorry no instructions yet)");
     }
-    std::process::exit(error_code);
+    process::exit(error_code);
 }
 
 pub struct DataObject {
