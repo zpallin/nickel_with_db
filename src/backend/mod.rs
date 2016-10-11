@@ -22,15 +22,16 @@ pub struct Schema {
  *  Database Server Config Struct
  */
 
-pub struct DatabaseServer {
+#[derive(Clone,Debug)]
+pub struct DatabaseConfig {
     pub host: String,
     pub port: u16,
     pub dbname: String,
 }
 
-pub trait Backend {
+impl DatabaseConfig {
 
-    fn new(db_str: String) -> DatabaseServer {
+    pub fn new(db_str: &str) -> DatabaseConfig {
 
         let db_arr = db_str
             .split("/")
@@ -55,17 +56,15 @@ pub trait Backend {
             .to_owned()
             .parse()
             .ok()
-            .expect("DatabaseServer: Wanted a number");
+            .expect("DatabaseConfig: Wanted a number");
 
-        DatabaseServer {
+        DatabaseConfig {
             host: host,
             port: port,
             dbname: dbname,
         }
     }
 }
-
-impl Backend for DatabaseServer {}
 
 /*========================================  
  * Soon to deprecate stuff below.

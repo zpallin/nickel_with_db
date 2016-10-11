@@ -13,18 +13,13 @@ extern crate nickel_with_db;
 extern crate argparse;
 extern crate time;
 
-// std includes
-//use std::env;
-use std::collections::HashMap;
+use std::sync::Arc;
+use argparse::{ArgumentParser, Store};
 
 // nickel with db
-//use nickel_with_db::models::blog;
-//use nickel_with_db::backend::mongo;
 use nickel_with_db::helpers::FormHelper;
-use nickel_with_db::models::blog;
+use nickel_with_db::models::blog::Blog;
 
-// argparse
-use argparse::{ArgumentParser, Store}; //StoreTrue
 
 // nickel
 //use nickel::status::StatusCode;
@@ -37,8 +32,10 @@ fn main() {
     /*
      * Argument Parsing
      */
+
+    // default values
     let mut bind = "localhost:8000".to_owned();
-    let mut database = "".to_owned();
+    let mut database = "localhost:27017".to_owned();
 
     // parser
     {
@@ -47,38 +44,31 @@ fn main() {
         let mut ap = ArgumentParser::new();
 
         ap.set_description("Running Nickel with a DB attached");
+
         ap.refer(&mut bind)
             .add_option(&["-b", "--bind"], Store,
             "Set bind address for webserver with port specified \
             ( format: \"--bind <bindhost>:<port>\" )");
+
         ap.refer(&mut database)
             .add_option(&["-d", "--database"], Store,
             "Set database address, port and db for the application. \
             ( format: \"--database <hostname>:<port>/<dbname>\" )");
+
         ap.parse_args_or_exit();
     }
 
-    /*
-     * Server states
-     */
+    // blog submit
     server.post("/blog/submit", middleware! { |_req, res|
+        let blog = Blog::new("localhost:27017/blog");
+
+        println!("/blog/submit");
+
+        // get data from request
         let form_data = try_with!(res, _req.form_body());
-//        let database = mongo::db::new("localhost:27017".to_owned());
-//        let db2 = mongo::DatabaseServer;
-
-        let mut data = HashMap::new();
-
-        data.insert("title", form_data.get("title").unwrap_or("Title?"));
-        data.insert("author", form_data.get("author").unwrap_or("Author?"));
-        data.insert("category", form_data.get("category").unwrap_or("Category?"));
-        data.insert("content", form_data.get("content").unwrap_or("Content?"));
-        //data.insert("timestamp", form_data.get("timestamp").unwrap_or("Timestamp?"));
-
-        // test print
-        for (key, value) in data {
-            println!("{}: {}", key, value);
-        }
-
+        
+        // insert data into db
+        blog.insert(form_data);
         #[derive(RustcEncodable)]
         struct FakeData;
         let data = FakeData{};
@@ -86,7 +76,29 @@ fn main() {
         return res.render("templates/home.tpl", &data)
     });
 
-    server.get("/blog/new", middleware! { |_req, res| 
+    server.post("/blog/submit", middleware! { |_req, res|
+        let blog = Blog::new("localhost:27017/blog");
+
+        println!("/blog/submit");
+
+        // get data from request
+        let form_data = try_with!(res, _req.form_body());
+        
+        // insert data into db
+        blog.insert(form_data);
+        #[derive(RustcEncodable)]
+        struct FakeData;
+        let data = FakeData{};
+
+        return res.render("templates/home.tpl", &data)
+    });
+
+
+    // blog new
+    server.get("/otherblog/new", middleware! { |_req, res| 
+        
+        println!("/otherblog/new");
+
         let schema = vec![
             ("title", "input_text"),
             ("author", "input_text"),
@@ -96,6 +108,17 @@ fn main() {
 
         let data = FormHelper::generic("blog", &schema);
         return res.render("templates/form.tpl", &data)
+    });
+
+    // display blog
+    server.get("/blog*", middleware! { |_req, res| 
+
+        println!("/blog*");
+        
+        #[derive(RustcEncodable)]
+        struct ViewData;
+        let data = ViewData;
+        return res.render("templates/home.tpl", &data)
     });
 
     // catch all for home page
@@ -108,3 +131,4 @@ fn main() {
 
     server.listen(&*bind);
 }
+

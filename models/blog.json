@@ -1,0 +1,16 @@
+{
+  "schema": {
+    "title": {
+      "dom_type": "text"
+    },
+    "author": {
+      "dom_type": "text"
+    },
+    "category": {
+      "dom_type": "text"
+    },
+    "content": {
+      "dom_type": "textarea"
+    }
+  }
+}

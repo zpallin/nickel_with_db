@@ -10,12 +10,12 @@ pub use mongodb::{Client, ThreadedClient};
 pub use mongodb::coll::Collection;
 pub use mongodb::db::{ThreadedDatabase, Database};
 pub use mongodb::db::options::CreateCollectionOptions;
-pub use backend::{DatabaseServer, Backend};
+pub use backend::{DatabaseConfig};
 
 // database structure
 /*
 pub struct db {
-    server: DatabaseServer,
+    server: DatabaseConfig,
     options: CreateCollectionOptions,
 }
 
@@ -28,7 +28,7 @@ impl db {
 
         // create new_db
         db { 
-            server: DatabaseServer::new(db_addr),
+            server: DatabaseConfig::new(db_addr),
             options: ops,
         }
     }
